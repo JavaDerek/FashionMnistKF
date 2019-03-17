@@ -70,6 +70,27 @@ def train_and_deploy(
       }
     })
 
+  # Step 3: train a model
+  if start_step <= 3:
+    train = dsl.ContainerOp(
+      name='train',
+      # image needs to be a compile-time string
+      image='docker.io/dotnetderek/train:latest',
+      arguments=[
+        preprocess.outputs['normalizedTrainImages'],
+        download.outputs['trainLabels'],
+        preprocess.outputs['normalizedTestImages'],
+        download.outputs['testLabels']
+      ],
+      file_outputs={
+        }
+    )
+  else:
+    train = ObjectDict({
+      'outputs': {
+      }
+    })
+
 if __name__ == '__main__':
   import kfp.compiler as compiler
   import sys
