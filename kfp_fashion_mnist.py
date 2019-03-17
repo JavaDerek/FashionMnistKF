@@ -22,7 +22,7 @@ def train_and_deploy(
 
   # Step 1: download and store data in pipeline
   if start_step <= 1:
-    preprocess = dsl.ContainerOp(
+    download = dsl.ContainerOp(
       name='download',
       # image needs to be a compile-time string
       image='docker.io/dotnetderek/download:031619',
@@ -32,16 +32,41 @@ def train_and_deploy(
         'trainImages':'/trainImagesObjectName.txt',
         'trainLabels':'/trainLabelsObjectName.txt',
         'testImages':'/testImagesObjectName.txt',
-        'testLabels':'/testImagesObjectName.txt'
+        'testLabels':'/testLabelsObjectName.txt'
+        }
+    )
+  else:
+    download = ObjectDict({
+      'outputs': {
+        'trainImages':'trainimages',
+        'trainLabels':'trainlabels',
+        'testImages':'testimages',
+        'testLabels':'testlabels'
+      }
+    })
+
+  # Step 2: normalize data between 0 and 1
+  if start_step <= 2:
+    preprocess = dsl.ContainerOp(
+      name='preprocess',
+      # image needs to be a compile-time string
+      image='docker.io/dotnetderek/preprocess:latest',
+      arguments=[
+        download.outputs['trainImages'],
+        download.outputs['trainLabels'],
+        download.outputs['testImages'],
+        download.outputs['testLabels']
+      ],
+      file_outputs={
+        'normalizedTrainImages':'/trainImagesObjectName.txt',
+        'normalizedTestImages':'/testImagesObjectName.txt'
         }
     )
   else:
     preprocess = ObjectDict({
       'outputs': {
-        'train_images':'trainimages',
-        'train_labels':'trainlabels',
-        'test_images':'testimages',
-        'test_labels':'testlabels'
+        'normalizedTrainImages':'normalizedtrainimages',
+        'normalizedTestImages':'normalizedtestimages'
       }
     })
 

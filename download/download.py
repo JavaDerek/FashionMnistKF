@@ -17,18 +17,21 @@ minioClient = Minio('172.17.0.39:9000',
 
 print('Instantiated Minio client')
 
+if minioClient.bucket_exists("fashionmnist"):
+    objects = minioClient.list_objects('fashionmnist', recursive=True)
+    for obj in objects:
+        minioClient.remove_object('fashionmnist',obj.object_name.encode('utf-8'))
+
+    print('Emptied existing fashionmnist bucket')
+    minioClient.remove_bucket("fashionmnist")
+    print('Removed existing fashionmnist bucket')
+
+minioClient.make_bucket("fashionmnist")
+print('Created new fashionmnist bucket')
+
 fashion_mnist = keras.datasets.fashion_mnist
 
 (train_images, train_labels), (test_images, test_labels) = fashion_mnist.load_data()
-
-try:
-    if not(minioClient.bucket_exists("fashionmnist")):
-        print("Made fashionmnist bucket")
-        minioClient.make_bucket("fashionmnist")
-    else:
-        print("fashionmnist exists")
-except ResponseError as err:
-    print(err)
 
 numpy.save('/train_images', train_images)
 numpy.save('/train_labels', train_labels)

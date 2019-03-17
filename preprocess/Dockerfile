@@ -1,4 +1,5 @@
-FROM tensorflow/tensorflow
+FROM publysher/alpine-numpy
 
-COPY download.py .
+COPY preprocess.py .
+RUN pip install minio
 ENTRYPOINT ["python", "./preprocess.py"]
