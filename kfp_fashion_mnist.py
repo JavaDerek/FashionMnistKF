@@ -78,11 +78,10 @@ def train_and_deploy(
       image='docker.io/dotnetderek/train:latest',
       arguments=[
         preprocess.outputs['normalizedTrainImages'],
-        download.outputs['trainLabels'],
-        preprocess.outputs['normalizedTestImages'],
-        download.outputs['testLabels']
+        download.outputs['trainLabels']
       ],
       file_outputs={
+        'trainedModelName':'/trainedModelName.txt'
         }
     )
   else:
