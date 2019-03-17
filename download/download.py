@@ -31,8 +31,10 @@ except ResponseError as err:
     print(err)
 
 numpy.save('/train_images', train_images)
+numpy.save('/train_labels', train_labels)
+numpy.save('/test_images', test_images)
+numpy.save('/test_labels', test_labels)
 
-# Put a file with default content-type, upon success prints the etag identifier computed by server.
 try:
     with open('/train_images.npy', 'rb') as file_data:
         file_stat = os.stat('/train_images.npy')
@@ -41,6 +43,42 @@ try:
 except ResponseError as err:
     print(err)
 
-#numpy.save('train_labels', train_labels)
-#numpy.save('test_images', test_images)
-#numpy.save('test_labels', test_labels)
+text_file = open("trainImagesObjectName.txt", "w")
+text_file.write('trainimages')
+text_file.close()
+
+try:
+    with open('/train_labels.npy', 'rb') as file_data:
+        file_stat = os.stat('/train_labels.npy')
+        print(minioClient.put_object('fashionmnist', 'trainlabels',
+                               file_data, file_stat.st_size))
+except ResponseError as err:
+    print(err)
+
+text_file = open("trainLabelsObjectName.txt", "w")
+text_file.write('trainlabels')
+text_file.close()
+
+try:
+    with open('/test_images.npy', 'rb') as file_data:
+        file_stat = os.stat('/test_images.npy')
+        print(minioClient.put_object('fashionmnist', 'testimages',
+                               file_data, file_stat.st_size))
+except ResponseError as err:
+    print(err)
+
+text_file = open("testImagesObjectName.txt", "w")
+text_file.write('testimages')
+text_file.close()
+
+try:
+    with open('/test_labels.npy', 'rb') as file_data:
+        file_stat = os.stat('/test_labels.npy')
+        print(minioClient.put_object('fashionmnist', 'testlabels',
+                               file_data, file_stat.st_size))
+except ResponseError as err:
+    print(err)
+
+text_file = open("testLabelsObjectName.txt", "w")
+text_file.write('testlabels')
+text_file.close()
