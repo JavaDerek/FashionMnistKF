@@ -12,4 +12,8 @@ cd train
 ./build.sh
 cd ..
 
+cd evaluate
+./build.sh
+cd ..
+
 python3 kfp_fashion_mnist.py kfpfmn.tar.gz

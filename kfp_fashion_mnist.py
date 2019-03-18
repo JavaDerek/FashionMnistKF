@@ -87,6 +87,27 @@ def train_and_deploy(
   else:
     train = ObjectDict({
       'outputs': {
+        'trainedModelName':'trainedmodel'
+      }
+    })
+
+  # Step 4: evaluate model
+  if start_step <= 4:
+    evaluate = dsl.ContainerOp(
+      name='evaluate',
+      # image needs to be a compile-time string
+      image='docker.io/dotnetderek/evaluate:latest',
+      arguments=[
+        preprocess.outputs['normalizedTestImages'],
+        download.outputs['testLabels'],
+        train.outputs['trainedModelName']
+      ],
+      file_outputs={
+        }
+    )
+  else:
+    evaluate = ObjectDict({
+      'outputs': {
       }
     })
 
