@@ -22,16 +22,23 @@ Setup Process
 
 docker run -p 9000:9000 --name minio1 -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" -v /data/rok:/data -v /data/rok/config:/root/.minio minio/minio server /data &
 
-6) Back on your main host computer's terminal window, run build.sh from the root of the GIT repo (note: you may need to do "chmod +x" on all of the build.sh files, first)
-7) Navigate to http://10.10.10.10
-8) Click "Pipeline Dashboard"
-9) Click "Upload Pipeline"
-10) Choose "fkpfmn.tar.gz" that was built by step #6 above - give it a friendly name you'll remember
-11) Click your newly-created pipeline
-12) Click "Start an experiment" and give it whatever name and description you like
-13) After you save that, you'll be asked to create a first Run - give it whatever name you like and hit "Create"
-14) On the page that comes up, choose the run that was just added by clicking its name (not the checkbox)
-15) Click boxes and choose tabs on the flyout to inspect the current state of each step
-16) Click "Refresh" to see boxes added as steps run
+6) In the same SSH window in the MiniKF virtual box, run these commands to install and start up TensorFlow Serving...
+
+mkdir -p /tmp/tfserving
+cd /tmp/tfserving
+git clone https://github.com/tensorflow/serving
+docker run --mount type=bind,source="/tmp/tfserving/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_cpu",target="/models/half_plus_two" -e MODEL_NAME=half_plus_two -p 8501:8501 -t tensorflow/serving &
+
+7) Back on your main host computer's terminal window, run build.sh from the root of the GIT repo (note: you may need to do "chmod +x" on all of the build.sh files, first)
+8) Navigate to http://10.10.10.10
+9) Click "Pipeline Dashboard"
+10) Click "Upload Pipeline"
+11) Choose "fkpfmn.tar.gz" that was built by step #6 above - give it a friendly name you'll remember
+12) Click your newly-created pipeline
+13) Click "Start an experiment" and give it whatever name and description you like
+14) After you save that, you'll be asked to create a first Run - give it whatever name you like and hit "Create"
+15) On the page that comes up, choose the run that was just added by clicking its name (not the checkbox)
+16) Click boxes and choose tabs on the flyout to inspect the current state of each step
+17) Click "Refresh" to see boxes added as steps run
 
 Hopefully, if everything has worked, you'll get to a point where all of the boxes have appeared and have green checks.  You're up and running!
