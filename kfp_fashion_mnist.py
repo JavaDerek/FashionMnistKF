@@ -111,6 +111,24 @@ def train_and_deploy(
       }
     })
 
+  # Step 5: serve
+  if start_step <= 5:
+    evaluate = dsl.ContainerOp(
+      name='serve',
+      # image needs to be a compile-time string
+      image='docker.io/dotnetderek/serve:latest',
+      arguments=[
+        train.outputs['trainedModelName']
+      ],
+      file_outputs={
+        }
+    )
+  else:
+    evaluate = ObjectDict({
+      'outputs': {
+      }
+    })
+
 if __name__ == '__main__':
   import kfp.compiler as compiler
   import sys
