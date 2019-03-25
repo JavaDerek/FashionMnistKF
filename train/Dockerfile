@@ -1,4 +1,4 @@
-FROM tensorflow/tensorflow
+FROM tensorflow/serving:latest-devel
 
 COPY train.py .
 RUN pip install minio
