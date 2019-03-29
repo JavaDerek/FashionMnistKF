@@ -6,11 +6,16 @@ from minio.error import ResponseError
 import sys
 import os
 import tensorflow as tf
+from glob import glob
 
 app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
+
+    session = tf.Session()
+    tf.keras.backend.set_session(session)
+
     minioClient = Minio('172.17.0.39:9000',
         access_key='AKIAIOSFODNN7EXAMPLE',
         secret_key='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
@@ -31,7 +36,24 @@ def hello_world():
     # The export path contains the name and the version of the model
     tf.keras.backend.set_learning_phase(0)  # Ignore dropout at inference
     model = tf.keras.models.load_model('model.h5')
-    export_path = '/tmp/mnist_model/1'
+
+    subfolders = glob("/tmp/mnist_model/*/")
+    mx = 0
+    nbr = 1
+
+    for sf in subfolders:
+        tmp = sf.replace("/tmp/mnist_model/","").replace("/","")
+        if (len(tmp) > 0):
+            nbr = int(tmp)
+        if (nbr > mx):
+            mx = nbr
+
+    mx = mx + 1
+    export_path = "/tmp/mnist_model/" +`mx`
+
+    print(export_path)
+
+    #export_path = '/tmp/mnist_model/1'
 
     # Fetch the Keras session and save the model
     # The signature definition is defined by the input and output tensors
