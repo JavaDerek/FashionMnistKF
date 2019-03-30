@@ -5,6 +5,7 @@ from minio import Minio
 from minio.error import ResponseError
 import sys
 import os
+import json
 
 minioClient = Minio('172.17.0.39:9000',
     access_key='AKIAIOSFODNN7EXAMPLE',
@@ -97,6 +98,10 @@ print('Test labels retrieved from local file system to Numpy array')
 
 train_images = train_images / 255.0
 test_images = test_images / 255.0
+
+data = json.dumps({"signature_name": "serving_default", "instances": test_images[0].tolist()})
+print("here's a test to send...")
+print(data)
 
 numpy.save('/train_images', train_images)
 numpy.save('/test_images', test_images)
