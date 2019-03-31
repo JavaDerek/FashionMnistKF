@@ -4,6 +4,7 @@ import numpy
 from minio import Minio
 from minio.error import ResponseError
 from tensorflow import keras
+import tensorflow as tf
 import sys
 import os
 
@@ -21,7 +22,7 @@ if len(sys.argv) > 2:
     bucketNameForTestLabels = sys.argv[2]
     bucketNameForModel = sys.argv[3]
 else:
-    bucketNameForTestImages = 'testimages'
+    bucketNameForTestImages = 'normalizedtestimages'
     bucketNameForTestLabels = 'testlabels'
     bucketNameForModel = 'trainedmodel'
 
@@ -40,6 +41,10 @@ except ResponseError as err:
 print('Model retrieved from S3 to local file system')
 
 model = keras.models.load_model('model.h5')
+
+model.compile(optimizer=tf.train.AdamOptimizer(), 
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
 
 print('Model retrieved from local file system to Keras model')
 
