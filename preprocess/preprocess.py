@@ -141,3 +141,5 @@ text_file.write('normalizedtestimages')
 text_file.close()
 
 print('Stored normalized test images in S3')
+print('explicit exit!')
+sys.exit(0)

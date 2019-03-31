@@ -14,7 +14,7 @@ class ObjectDict(dict):
 )
 def train_and_deploy(
 ):
-  start_step = 1
+  start_step = 3
   # Step 1: download and store data in pipeline
   if start_step <= 1:
     download = dsl.ContainerOp(
