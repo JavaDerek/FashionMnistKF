@@ -25,7 +25,7 @@ def train_and_deploy(
     download = dsl.ContainerOp(
       name='download',
       # image needs to be a compile-time string
-      image='docker.io/dotnetderek/download:031619',
+      image='docker.io/dotnetderek/download:latest',
       arguments=[
       ],
       file_outputs={

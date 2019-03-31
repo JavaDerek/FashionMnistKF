@@ -6,6 +6,7 @@ from minio.error import ResponseError
 import sys
 import os
 import json
+import pickle
 
 minioClient = Minio('172.17.0.39:9000',
     access_key='AKIAIOSFODNN7EXAMPLE',
@@ -38,7 +39,7 @@ except ResponseError as err:
 
 print('Training images retrieved from S3 to local file system')
 
-train_images = numpy.load('train_images')
+train_images = pickle.load( open( "train_images", "rb" ) )
 
 print('Training images retrieved from local file system to Numpy array')
 
@@ -56,7 +57,7 @@ except ResponseError as err:
 
 print('Training labels retrieved from S3 to local file system')
 
-train_labels = numpy.load('train_labels')
+train_labels = pickle.load( open( "train_labels", "rb" ) )
 
 print('Training labels retrieved from local file system to Numpy array')
 
@@ -74,7 +75,7 @@ except ResponseError as err:
 
 print('Test images retrieved from S3 to local file system')
 
-test_images = numpy.load('test_images')
+test_images = pickle.load( open( "test_images", "rb" ) )
 
 print('Test images retrieved from local file system to Numpy array')
 
@@ -92,23 +93,30 @@ except ResponseError as err:
 
 print('Test labels retrieved from S3 to local file system')
 
-test_labels = numpy.load('test_labels')
+test_labels = pickle.load( open( "test_labels", "rb" ) )
 
 print('Test labels retrieved from local file system to Numpy array')
 
 train_images = train_images / 255.0
 test_images = test_images / 255.0
 
+# reshape for feeding into the model - DMF March 30, 2019 - Please let this work! :-)
+train_images = train_images.reshape(train_images.shape[0], 28, 28, 1)
+test_images = test_images.reshape(test_images.shape[0], 28, 28, 1)
+
+print('\ntrain_images.shape: {}, of {}'.format(train_images.shape, train_images.dtype))
+print('test_images.shape: {}, of {}'.format(test_images.shape, test_images.dtype))
+
 data = json.dumps({"signature_name": "serving_default", "instances": test_images[0].tolist()})
 print("here's a test to send...")
 print(data)
 
-numpy.save('/train_images', train_images)
-numpy.save('/test_images', test_images)
+pickle.dump( train_images, open( "/train_images", "wb" ), pickle.HIGHEST_PROTOCOL )
+pickle.dump( test_images, open( "/test_images", "wb" ), pickle.HIGHEST_PROTOCOL )
 
 try:
-    with open('/train_images.npy', 'rb') as file_data:
-        file_stat = os.stat('/train_images.npy')
+    with open('/train_images', 'rb') as file_data:
+        file_stat = os.stat('/train_images')
         print(minioClient.put_object('fashionmnist', 'normalizedtrainimages',
                                file_data, file_stat.st_size))
 except ResponseError as err:
@@ -121,8 +129,8 @@ text_file.close()
 print('Stored normalized training images in S3')
 
 try:
-    with open('/test_images.npy', 'rb') as file_data:
-        file_stat = os.stat('/test_images.npy')
+    with open('/test_images', 'rb') as file_data:
+        file_stat = os.stat('/test_images')
         print(minioClient.put_object('fashionmnist', 'normalizedtestimages',
                                file_data, file_stat.st_size))
 except ResponseError as err:
