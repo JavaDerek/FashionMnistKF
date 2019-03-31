@@ -103,7 +103,7 @@ try:
 except ResponseError as err:
     print(err)
 
-text_file = open("trainedModelName.txt", "w")
+text_file = open("/trainedModelName.txt", "w") 
 text_file.write('trainedmodel')
 text_file.close()
 

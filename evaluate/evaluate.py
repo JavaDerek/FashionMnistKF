@@ -7,6 +7,7 @@ from tensorflow import keras
 import tensorflow as tf
 import sys
 import os
+import requests
 
 print('Evaluate started')
 
@@ -85,3 +86,6 @@ print('Test labels retrieved from local file system to Keras model')
 test_loss, test_acc = model.evaluate(test_images, test_labels)
 
 print('Test accuracy:', test_acc)
+
+r = requests.get('http://10.10.10.10:5000')
+print(r.text)

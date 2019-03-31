@@ -20,7 +20,7 @@ cd evaluate
 ./build.sh
 cd ..
 
-echo "serve"
+echo "tfsbase"
 cd serve
 ./build.sh
 cd ..

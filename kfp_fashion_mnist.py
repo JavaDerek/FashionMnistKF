@@ -81,7 +81,7 @@ def train_and_deploy(
         download.outputs['trainLabels']
       ],
       file_outputs={
-        'trainedModelName':'/trainedModelName.txt'
+        'trainedModelName':'/trainedModelName.txt' 
         }
     )
   else:
@@ -100,24 +100,6 @@ def train_and_deploy(
       arguments=[
         preprocess.outputs['normalizedTestImages'],
         download.outputs['testLabels'],
-        train.outputs['trainedModelName']
-      ],
-      file_outputs={
-        }
-    )
-  else:
-    evaluate = ObjectDict({
-      'outputs': {
-      }
-    })
-
-  # Step 5: serve
-  if start_step <= 5:
-    evaluate = dsl.ContainerOp(
-      name='serve',
-      # image needs to be a compile-time string
-      image='docker.io/dotnetderek/serve:latest',
-      arguments=[
         train.outputs['trainedModelName']
       ],
       file_outputs={
