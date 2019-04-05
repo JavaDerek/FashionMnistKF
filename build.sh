@@ -21,7 +21,7 @@ cd evaluate
 cd ..
 
 echo "tfsbase"
-cd serve
+cd tfsbase
 ./build.sh
 cd ..
 
