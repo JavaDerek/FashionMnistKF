@@ -26,4 +26,3 @@ cd tfsbase
 cd ..
 
 python3 kfp_fashion_mnist.py kfpfmn.tar.gz
-python3 short_run.py sr.tar.gz

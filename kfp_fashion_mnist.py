@@ -13,98 +13,70 @@ class ObjectDict(dict):
   description='Train and Deploy Fashion MNIST'
 )
 def train_and_deploy(
+  download_and_preprocess="full"
 ):
-  start_step = 1
+
   # Step 1: download and store data in pipeline
-  if start_step <= 1:
-    download = dsl.ContainerOp(
-      name='download',
-      # image needs to be a compile-time string
-      image='docker.io/dotnetderek/download:latest',
-      arguments=[
-      ],
-      file_outputs={
-        'trainImages':'/trainImagesObjectName.txt',
-        'trainLabels':'/trainLabelsObjectName.txt',
-        'testImages':'/testImagesObjectName.txt',
-        'testLabels':'/testLabelsObjectName.txt'
-        }
-    )
-  else:
-    download = ObjectDict({
-      'outputs': {
-        'trainImages':'trainimages',
-        'trainLabels':'trainlabels',
-        'testImages':'testimages',
-        'testLabels':'testlabels'
-      }
-    })
+  download = dsl.ContainerOp(
+    name='download',
+    # image needs to be a compile-time string
+    image='docker.io/dotnetderek/download:latest',
+    arguments=[
+      download_and_preprocess
+    ],
+    file_outputs={
+      'trainImages':'/trainImagesObjectName.txt',
+      'trainLabels':'/trainLabelsObjectName.txt',
+      'testImages':'/testImagesObjectName.txt',
+      'testLabels':'/testLabelsObjectName.txt'
+    }
+  )
 
   # Step 2: normalize data between 0 and 1
-  if start_step <= 2:
-    preprocess = dsl.ContainerOp(
-      name='preprocess',
-      # image needs to be a compile-time string
-      image='docker.io/dotnetderek/preprocess:latest',
-      arguments=[
-        download.outputs['trainImages'],
-        download.outputs['trainLabels'],
-        download.outputs['testImages'],
-        download.outputs['testLabels']
-      ],
-      file_outputs={
-        'normalizedTrainImages':'/trainImagesObjectName.txt',
-        'normalizedTestImages':'/testImagesObjectName.txt'
-        }
-    )
-  else:
-    preprocess = ObjectDict({
-      'outputs': {
-        'normalizedTrainImages':'normalizedtrainimages',
-        'normalizedTestImages':'normalizedtestimages'
+  preprocess = dsl.ContainerOp(
+    name='preprocess',
+    # image needs to be a compile-time string
+    image='docker.io/dotnetderek/preprocess:latest',
+    arguments=[
+      download.outputs['trainImages'],
+      download.outputs['trainLabels'],
+      download.outputs['testImages'],
+      download.outputs['testLabels'],
+      download_and_preprocess
+    ],
+    file_outputs={
+      'normalizedTrainImages':'/trainImagesObjectName.txt',
+      'normalizedTestImages':'/testImagesObjectName.txt'
       }
-    })
+  )
 
   # Step 3: train a model
-  if start_step <= 3:
-    train = dsl.ContainerOp(
-      name='train',
-      # image needs to be a compile-time string
-      image='docker.io/dotnetderek/train:latest',
-      arguments=[
-        preprocess.outputs['normalizedTrainImages'],
-        download.outputs['trainLabels']
-      ],
-      file_outputs={
-        'trainedModelName':'/trainedModelName.txt' 
-        }
-    )
-  else:
-    train = ObjectDict({
-      'outputs': {
-        'trainedModelName':'trainedmodel'
+  train = dsl.ContainerOp(
+    name='train',
+    # image needs to be a compile-time string
+    image='docker.io/dotnetderek/train:latest',
+    arguments=[
+      preprocess.outputs['normalizedTrainImages'],
+      download.outputs['trainLabels']
+    ],
+    file_outputs={
+      'trainedModelName':'/trainedModelName.txt' 
       }
-    })
+  )
 
   # Step 4: evaluate model
-  if start_step <= 4:
-    evaluate = dsl.ContainerOp(
-      name='evaluate',
-      # image needs to be a compile-time string
-      image='docker.io/dotnetderek/evaluate:latest',
-      arguments=[
-        preprocess.outputs['normalizedTestImages'],
-        download.outputs['testLabels'],
-        train.outputs['trainedModelName']
-      ],
-      file_outputs={
-        }
-    )
-  else:
-    evaluate = ObjectDict({
-      'outputs': {
+  evaluate = dsl.ContainerOp(
+    name='evaluate',
+    # image needs to be a compile-time string
+    image='docker.io/dotnetderek/evaluate:latest',
+    arguments=[
+      preprocess.outputs['normalizedTestImages'],
+      download.outputs['testLabels'],
+      train.outputs['trainedModelName']
+    ],
+    file_outputs={
       }
-    })
+  )
 
 if __name__ == '__main__':
   import kfp.compiler as compiler
