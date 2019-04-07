@@ -11,8 +11,12 @@ import sys
 import tempfile
 import tarfile
 import pickle
+from time import time
+from tensorflow.python.keras.callbacks import TensorBoard
 
 print(tf.__version__)
+
+tensorboard = TensorBoard(log_dir="/logdir")
 
 model = keras.Sequential([
   keras.layers.Conv2D(input_shape=(28,28,1), filters=8, kernel_size=3, 
@@ -86,7 +90,7 @@ print('Training labels retrieved from local file system to Numpy array')
 
 print('\ntrain_images.shape: {}, of {}'.format(train_images.shape, train_images.dtype))
 
-model.fit(train_images, train_labels, epochs=epochs)
+model.fit(train_images, train_labels, epochs=epochs, callbacks=[tensorboard])
 
 print('Training finished')
 
@@ -102,6 +106,13 @@ try:
                                file_data, file_stat.st_size))
 except ResponseError as err:
     print(err)
+
+# This won't work with KF's viewer yet
+md_file = open("/mlpipeline-ui-metadata.json", "w")
+md_file.write('{"version": 1,"outputs": [{"type": "tensorboard","source": "/logdir"}]}')
+md_file.close()
+
+print('Wrote tensorboard metadata')
 
 text_file = open("/trainedModelName.txt", "w") 
 text_file.write('trainedmodel')

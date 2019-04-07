@@ -25,10 +25,10 @@ docker run -p 9000:9000 --name minio1 -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE"
 
 6) In the same SSH window in the MiniKF virtual box, run these commands to install and start up TensorFlow Serving...
 
-mkdir -p /tmp/tfserving
-cd /tmp/tfserving
-git clone https://github.com/tensorflow/serving
-docker run --mount type=bind,source="/tmp/tfserving/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_cpu",target="/models/half_plus_two" -e MODEL_NAME=half_plus_two -p 8501:8501 -p 5000:5000 -t dotnetderek/tfsbase:latest &
+* mkdir -p /tmp/tfserving
+* cd /tmp/tfserving
+* git clone https://github.com/tensorflow/serving
+* docker run --mount type=bind,source="/tmp/tfserving/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_cpu",target="/models/half_plus_two" -e MODEL_NAME=half_plus_two -p 8501:8501 -p 5000:5000 -t dotnetderek/tfsbase:latest &
 
 7) Back on your main host computer's terminal window, run build.sh from the root of the GIT repo (note: you may need to do "chmod +x" on all of the build.sh files, first)
 8) Navigate to http://10.10.10.10
