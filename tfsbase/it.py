@@ -16,7 +16,7 @@ def hello_world():
     session = tf.Session()
     tf.keras.backend.set_session(session)
 
-    minioClient = Minio('172.17.0.39:9000',
+    minioClient = Minio('172.17.0.44:9000',
         access_key='AKIAIOSFODNN7EXAMPLE',
         secret_key='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
         secure=False)

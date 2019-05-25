@@ -13,7 +13,7 @@ import pickle
 print(tf.__version__)
 
 if (sys.argv[1] == "full"):
-    minioClient = Minio('172.17.0.39:9000',
+    minioClient = Minio('172.17.0.44:9000',
         access_key='AKIAIOSFODNN7EXAMPLE',
         secret_key='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
         secure=False)

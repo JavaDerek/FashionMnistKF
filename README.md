@@ -23,24 +23,27 @@ Setup Process
 
 docker run -p 9000:9000 --name minio1 -e "MINIO_ACCESS_KEY=AKIAIOSFODNN7EXAMPLE" -e "MINIO_SECRET_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY" -v /data/rok:/data -v /data/rok/config:/root/.minio minio/minio server /data &
 
-6) In the same SSH window in the MiniKF virtual box, run these commands to install and start up TensorFlow Serving...
+6) Note the IP that is given to you when this finishes.  Run a global replace in your IDE of choice to replace the IP 172.17.0.44 with whatever IP you saw above.
+
+7) In the same SSH window in the MiniKF virtual box, run these commands to install and start up TensorFlow Serving...
 
 * mkdir -p /tmp/tfserving
 * cd /tmp/tfserving
 * git clone https://github.com/tensorflow/serving
 * docker run --mount type=bind,source="/tmp/tfserving/serving/tensorflow_serving/servables/tensorflow/testdata/saved_model_half_plus_two_cpu",target="/models/half_plus_two" -e MODEL_NAME=half_plus_two -p 8501:8501 -p 5000:5000 -t dotnetderek/tfsbase:latest &
 
-7) Back on your main host computer's terminal window, run build.sh from the root of the GIT repo (note: you may need to do "chmod +x" on all of the build.sh files, first)
-8) Navigate to http://10.10.10.10
-9) Click "Pipeline Dashboard"
-10) Click "Upload Pipeline"
-11) Choose "fkpfmn.tar.gz" that was built by step #6 above - give it a friendly name you'll remember
-12) Click your newly-created pipeline
-13) Click "Start an experiment" and give it whatever name and description you like
-14) After you save that, you'll be asked to create a first Run - give it whatever name you like and hit "Create"
-15) On the page that comes up, choose the run that was just added by clicking its name (not the checkbox)
-16) Click boxes and choose tabs on the flyout to inspect the current state of each step
-17) Click "Refresh" to see boxes added as steps run
+NOTE: be aware that it is normal for your console to start spinning with error messages after this.  They will go away after we run the pipeline once to completion (by the end of these instructions).
+
+8) Back on your main host computer's terminal window, run build.sh from the root of the GIT repo (note: you may need to do "chmod +x" on all of the build.sh files, first)
+9) Navigate to http://10.10.10.10:8080 
+10) Click "Pipeline Dashboard"
+11) Click "Upload Pipeline"
+12) Choose "fkpfmn.tar.gz" that was built by step #6 above - give it a friendly name you'll remember
+13) Click your newly-created pipeline
+14) Click "Create experiment" and give it whatever name and description you like
+15) After you save that, you'll be asked to create a first Run - give it whatever name you like and hit "Create"
+16) On the page that comes up, choose the run that was just added by clicking its name (not the checkbox)
+17) Click boxes and choose tabs on the flyout to inspect the current state of each step
 18) Wait until you get to a point where all of the boxes have appeared and have green checks.
 19) From the "preprocess" step's Logs, copy the big JSON message that appeared underneath the line that reads "here's a test to send..."
 20) Past this into the body of a POST method in Postman, with a URL of http://10.10.10.10:8501/v1/models/mnist:predict
