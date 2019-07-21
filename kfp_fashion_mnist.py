@@ -63,6 +63,9 @@ def train_and_deploy(
       preprocess.outputs['preprocessOk'],
       download.outputs['downloadOk']
     ],
+    file_outputs={
+      'tOk':'/trainOk.txt'
+    },
     pvolumes={
       "/mnt": vop.volume
     }

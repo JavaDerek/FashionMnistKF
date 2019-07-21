@@ -59,14 +59,14 @@ print("Saved model to local disk")
 #---
 
 # This won't work with KF's viewer yet
-# md_file = open("/mnt/mlpipeline-ui-metadata.json", "w")
-# md_file.write('{"version": 1,"outputs": [{"type": "tensorboard","source": "/logdir"}]}')
-# md_file.close()
+md_file = open("/mnt/mlpipeline-ui-metadata.json", "w")
+md_file.write('{"version": 1,"outputs": [{"type": "tensorboard","source": "/logdir"}]}')
+md_file.close()
 
-# print('Wrote tensorboard metadata')
+print('Wrote tensorboard metadata')
 
-print("starting to write conclusion message")
-text_file = open("trainOk.txt", "w+")
+print("2starting to write conclusion message")
+text_file = open("/trainOk.txt", "w+")
 text_file.write('ok')
 text_file.close()
-print("wrote conclusion message")
+print("2wrote conclusion message")
