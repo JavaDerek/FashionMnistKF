@@ -4,8 +4,6 @@ import tensorflow as tf
 import numpy
 from tensorflow import keras
 import numpy as np
-from minio import Minio
-from minio.error import ResponseError
 import os
 import sys
 import tempfile
@@ -37,52 +35,13 @@ model.compile(optimizer=tf.train.AdamOptimizer(),
 
 print('Compiled the model')
 
-minioClient = Minio('172.17.0.44:9000',
-    access_key='AKIAIOSFODNN7EXAMPLE',
-    secret_key='wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY',
-    secure=False)
-
-print('Instantiated Minio client')
-
-if len(sys.argv) > 2:
-    bucketNameForTrainImages =  sys.argv[1]
-    bucketNameForTrainLabels = sys.argv[2]
-else:
-    bucketNameForTrainImages =  'normalizedtrainimages'
-    bucketNameForTrainLabels = 'trainlabels'
-
-print(bucketNameForTrainImages)
-print(bucketNameForTrainLabels)
-
-try:
-    data = minioClient.get_object('fashionmnist', bucketNameForTrainImages)
-    with open('trainimages', 'wb') as file_data:
-        for d in data.stream(32*1024):
-            file_data.write(d)
-except ResponseError as err:
-    print(err)
-
-print('Training images retrieved from S3 to local file system')
-
-train_images = pickle.load( open( "trainimages", "rb" ) )
+train_images = pickle.load( open( "/mnt/train_images", "rb" ) )
 
 print('Training images retrieved from local file system to Numpy array')
 
 #---
 
-print(bucketNameForTrainLabels)
-
-try:
-    data = minioClient.get_object('fashionmnist', bucketNameForTrainLabels)
-    with open('trainlabels', 'wb') as file_data:
-        for d in data.stream(32*1024):
-            file_data.write(d)
-except ResponseError as err:
-    print(err)
-
-print('Training labels retrieved from S3 to local file system')
-
-train_labels = pickle.load( open( "trainlabels", "rb" ) )
+train_labels = pickle.load( open( "/mnt/train_labels", "rb" ) )
 
 print('Training labels retrieved from local file system to Numpy array')
 
@@ -94,28 +53,20 @@ model.fit(train_images, train_labels, epochs=epochs, callbacks=[tensorboard])
 
 print('Training finished')
 
-model.save('my_model.h5')
+model.save('/mnt/my_model.h5')
 print("Saved model to local disk")
 
 #---
 
-try:
-    with open('my_model.h5', 'rb') as file_data:
-        file_stat = os.stat('my_model.h5')
-        print(minioClient.put_object('fashionmnist', 'trainedmodel',
-                               file_data, file_stat.st_size))
-except ResponseError as err:
-    print(err)
-
 # This won't work with KF's viewer yet
-md_file = open("/mlpipeline-ui-metadata.json", "w")
-md_file.write('{"version": 1,"outputs": [{"type": "tensorboard","source": "/logdir"}]}')
-md_file.close()
+# md_file = open("/mnt/mlpipeline-ui-metadata.json", "w")
+# md_file.write('{"version": 1,"outputs": [{"type": "tensorboard","source": "/logdir"}]}')
+# md_file.close()
 
-print('Wrote tensorboard metadata')
+# print('Wrote tensorboard metadata')
 
-text_file = open("/trainedModelName.txt", "w") 
-text_file.write('trainedmodel')
+print("starting to write conclusion message")
+text_file = open("trainOk.txt", "w+")
+text_file.write('ok')
 text_file.close()
-
-print('Stored trained model in S3')
+print("wrote conclusion message")

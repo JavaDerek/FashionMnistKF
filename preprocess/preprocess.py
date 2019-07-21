@@ -46,5 +46,10 @@ if (sys.argv[1] == "full"):
     print("here's a test to send...")
     print(data)
 
-    pickle.dump( train_images, open( "/mnt/train_images", "wb" ), pickle.HIGHEST_PROTOCOL )
-    pickle.dump( test_images, open( "/mnt/test_images", "wb" ), pickle.HIGHEST_PROTOCOL )
+    pickle.dump( train_images, open( "/mnt/train_images", "wb+" ), pickle.HIGHEST_PROTOCOL )
+    pickle.dump( test_images, open( "/mnt/test_images", "wb+" ), pickle.HIGHEST_PROTOCOL )
+
+print("starting to write conclusion message")
+text_file = open("preprocessOk.txt", "w")
+text_file.write('ok')
+text_file.close()

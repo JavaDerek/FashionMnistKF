@@ -23,7 +23,7 @@ if (sys.argv[1] == "full"):
     pickle.dump( test_images, open( "/mnt/test_images", "wb" ), pickle.HIGHEST_PROTOCOL )
     pickle.dump( test_labels, open( "/mnt/test_labels", "wb" ), pickle.HIGHEST_PROTOCOL )
 
-    print("starting to write conclusion message")
-    text_file = open("downloadOk.txt", "w")
-    text_file.write('ok')
-    text_file.close()
+print("starting to write conclusion message")
+text_file = open("downloadOk.txt", "w")
+text_file.write('ok')
+text_file.close()

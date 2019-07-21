@@ -1,5 +1,5 @@
 #/bin/bash
 
 docker build . -t train
-docker tag train dotnetderek/train:latest
-docker push dotnetderek/train:latest
+docker tag train dotnetderek/train:vop
+docker push dotnetderek/train:vop

@@ -46,37 +46,41 @@ def train_and_deploy(
       download_and_preprocess,
       download.outputs['downloadOk']
     ],
+    file_outputs={
+      'preprocessOk':'/preprocessOk.txt'
+    },
     pvolumes={
       "/mnt": vop.volume
     }
   )
 
-  # # Step 3: train a model
-  # train = dsl.ContainerOp(
-  #   name='train',
-  #   # image needs to be a compile-time string
-  #   image='docker.io/dotnetderek/train:latest',
-  #   arguments=[
-  #     preprocess.outputs['normalizedTrainImages'],
-  #     download.outputs['trainLabels']
-  #   ],
-  #   file_outputs={
-  #     'trainedModelName':'/trainedModelName.txt' 
-  #     }
-  # )
+  # Step 3: train a model
+  train = dsl.ContainerOp(
+    name='train',
+    # image needs to be a compile-time string
+    image='docker.io/dotnetderek/train:vop',
+    arguments=[
+      preprocess.outputs['preprocessOk'],
+      download.outputs['downloadOk']
+    ],
+    pvolumes={
+      "/mnt": vop.volume
+    }
+  )
 
-  # # Step 4: evaluate model
+  # Step 4: evaluate model
   # evaluate = dsl.ContainerOp(
   #   name='evaluate',
   #   # image needs to be a compile-time string
-  #   image='docker.io/dotnetderek/evaluate:latest',
+  #   image='docker.io/dotnetderek/evaluate:vop',
   #   arguments=[
-  #     preprocess.outputs['normalizedTestImages'],
-  #     download.outputs['testLabels'],
-  #     train.outputs['trainedModelName']
+  #     preprocess.outputs['preprocessOk'],
+  #     download.outputs['downloadOk'],
+  #     train.outputs['trainOk']
   #   ],
-  #   file_outputs={
-  #     }
+  #   pvolumes={
+  #     "/mnt": vop.volume
+  #   }
   # )
 
 if __name__ == '__main__':
