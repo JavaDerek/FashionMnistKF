@@ -19,13 +19,13 @@ print('Model retrieved from local file system to Keras model')
 
 #---
 
-test_images = numpy.load('/mnt/test_images.npy')
+test_images = numpy.load('/mnt/test_images')
 
 print('Test images retrieved from local file system to Keras model')
 
 #---
 
-test_labels = numpy.load('/mnt/test_labels.npy')
+test_labels = numpy.load('/mnt/test_labels')
 
 print('Test labels retrieved from local file system to Keras model')
 

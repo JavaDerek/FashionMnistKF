@@ -72,19 +72,19 @@ def train_and_deploy(
   )
 
   # Step 4: evaluate model
-  # evaluate = dsl.ContainerOp(
-  #   name='evaluate',
-  #   # image needs to be a compile-time string
-  #   image='docker.io/dotnetderek/evaluate:vop',
-  #   arguments=[
-  #     preprocess.outputs['preprocessOk'],
-  #     download.outputs['downloadOk'],
-  #     train.outputs['trainOk']
-  #   ],
-  #   pvolumes={
-  #     "/mnt": vop.volume
-  #   }
-  # )
+  evaluate = dsl.ContainerOp(
+    name='evaluate',
+    # image needs to be a compile-time string
+    image='docker.io/dotnetderek/evaluate:vop',
+    arguments=[
+      preprocess.outputs['preprocessOk'],
+      download.outputs['downloadOk'],
+      train.outputs['tOk']
+    ],
+    pvolumes={
+      "/mnt": vop.volume
+    }
+  )
 
 if __name__ == '__main__':
   import kfp.compiler as compiler
