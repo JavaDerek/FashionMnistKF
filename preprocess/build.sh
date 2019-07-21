@@ -1,5 +1,5 @@
 #/bin/bash
 
 docker build . -t preprocess
-docker tag preprocess dotnetderek/preprocess:latest
-docker push dotnetderek/preprocess:latest
+docker tag preprocess dotnetderek/preprocess:vop
+docker push dotnetderek/preprocess:vop
